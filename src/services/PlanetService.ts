@@ -27,7 +27,15 @@ class PlanetService {
 					
 			if (response?.data?.results) {
 				const planets = await camelcaseKeys(response?.data?.results)
-				this.planets.value = planets
+				const formattedPlanets = await planets.map((p:IPlanet) => ({
+					...p,
+					rotationPeriod: Number(p.rotationPeriod),
+					orbitalPeriod: Number(p.orbitalPeriod),
+					diameter: Number(p.diameter),
+					surfaceWater: p.surfaceWater !== "unknown" ? Number(p.surfaceWater) : p.surfaceWater,
+					population: p.population !== "unknown" ? Number(p.population) : p.population
+				}))
+				this.planets.value = formattedPlanets
 			}
 
 			if (response?.data?.count) {

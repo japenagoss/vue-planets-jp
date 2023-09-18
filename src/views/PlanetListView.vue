@@ -10,22 +10,38 @@
 			<thead>
 				<tr>
 					<th class="text-left">
-						<v-icon
-							size="large"
-							icon="mdi-chevron-up-circle-outline"
-							v-if="orderBy === 'name' && order === 'desc'"
-							@click="setOrder"
-						></v-icon>
-						<v-icon
-							size="large"
-							icon="mdi-chevron-down-circle-outline"
-							v-if="orderBy === 'name' && order === 'asc'"
-							@click="setOrder"
-						></v-icon>
-						Name
+						<SortableColumn
+							:setHover="setHover"
+							:setOrder="setOrder"
+							:orderBy="orderBy"
+							:order="order"
+							:hover="hover"
+							attributeName="name"
+							label="Name"
+						/>
 					</th>
-					<th class="text-left">Rotation Period</th>
-					<th class="text-left">Orbital Period</th>
+					<th class="text-left">
+						<SortableColumn
+							:setHover="setHover"
+							:setOrder="setOrder"
+							:orderBy="orderBy"
+							:order="order"
+							:hover="hover"
+							attributeName="rotationPeriod"
+							label="Rotation Period"
+						/>
+					</th>
+					<th class="text-left">
+						<SortableColumn
+							:setHover="setHover"
+							:setOrder="setOrder"
+							:orderBy="orderBy"
+							:order="order"
+							:hover="hover"
+							attributeName="orbitalPeriod"
+							label="Orbital Period"
+						/>
+					</th>
 					<th class="text-left">Diameter</th>
 					<th class="text-left">Climate</th>
 					<th class="text-left">Gravity</th>
@@ -61,11 +77,13 @@
 <script lang="ts" setup>
 	import { Ref, ref, onMounted, watch, computed } from "vue"
 	import PlanetService from "@/services/PlanetService"
+	import SortableColumn from "@/components/Table/SortableColumn.vue"
 
 	const page:Ref<number> = ref(1)
 	const loading:Ref<boolean> = ref(true)
 	const orderBy:Ref<string> = ref("name")
 	const order:Ref<string> = ref("asc")
+	const hover:Ref<string> = ref("")
 
 	const service = new PlanetService()
 	const planets = service.getPlanets()
@@ -86,23 +104,34 @@
 
 	const orderedPlanets = computed(() => {
 		return planets.value.sort((a, b) => {
-			if (order.value === "asc") {
-				return a.name.localeCompare(b.name)
-			} else if (order.value === "desc") {
-				return b.name.localeCompare(a.name)
+			if (typeof a[orderBy.value] === "string") {
+				if (order.value === "asc") {
+					return a[orderBy.value].localeCompare(b[orderBy.value])
+				} else if (order.value === "desc") {
+					return b[orderBy.value].localeCompare(a[orderBy.value])
+				}
+			} else if (typeof a[orderBy.value] === "number") {
+				if (order.value === "asc") {
+					return a[orderBy.value] - b[orderBy.value]
+				} else if (order.value === "desc") {
+					return b[orderBy.value] - a[orderBy.value]
+				}
 			}
 		})
 	})
 
-	const setOrder = () => {
+	const setOrder = (value: string) => {
 		if (order.value === "asc") {
 			order.value = "desc"
 		} else {
 			order.value = "asc"
 		}
+		orderBy.value = value
 	}
 
-	console.log(order.value)
+	const setHover = (value: string) => {
+		hover.value = value
+	}
 
 </script>
 
