@@ -9,7 +9,21 @@
 		<v-table theme="dark" v-if="!loading">
 			<thead>
 				<tr>
-					<th class="text-left">Name</th>
+					<th class="text-left">
+						<v-icon
+							size="large"
+							icon="mdi-chevron-up-circle-outline"
+							v-if="orderBy === 'name' && order === 'desc'"
+							@click="setOrder"
+						></v-icon>
+						<v-icon
+							size="large"
+							icon="mdi-chevron-down-circle-outline"
+							v-if="orderBy === 'name' && order === 'asc'"
+							@click="setOrder"
+						></v-icon>
+						Name
+					</th>
 					<th class="text-left">Rotation Period</th>
 					<th class="text-left">Orbital Period</th>
 					<th class="text-left">Diameter</th>
@@ -21,7 +35,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="planet in planets" :key="planet.name">
+				<tr v-for="planet in orderedPlanets" :key="planet.name">
 					<td>{{ planet.name }}</td>
 					<td>{{ planet.rotationPeriod }}</td>
 					<td>{{ planet.orbitalPeriod }}</td>
@@ -45,11 +59,13 @@
 </template>
 
 <script lang="ts" setup>
-	import { Ref, ref, onMounted, watch } from "vue"
+	import { Ref, ref, onMounted, watch, computed } from "vue"
 	import PlanetService from "@/services/PlanetService"
 
 	const page:Ref<number> = ref(1)
 	const loading:Ref<boolean> = ref(true)
+	const orderBy:Ref<string> = ref("name")
+	const order:Ref<string> = ref("asc")
 
 	const service = new PlanetService()
 	const planets = service.getPlanets()
@@ -67,6 +83,26 @@
 			loading.value = false
 		})()
 	})
+
+	const orderedPlanets = computed(() => {
+		return planets.value.sort((a, b) => {
+			if (order.value === "asc") {
+				return a.name.localeCompare(b.name)
+			} else if (order.value === "desc") {
+				return b.name.localeCompare(a.name)
+			}
+		})
+	})
+
+	const setOrder = () => {
+		if (order.value === "asc") {
+			order.value = "desc"
+		} else {
+			order.value = "asc"
+		}
+	}
+
+	console.log(order.value)
 
 </script>
 
