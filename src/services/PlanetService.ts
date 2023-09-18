@@ -20,7 +20,7 @@ class PlanetService {
 		return this.total
 	}
 
-	async fetchPlanets(page: number | undefined): Promise<void> {
+	async fetchPlanets(page: number): Promise<void> {
 		try {
 			const url = `https://swapi.dev/api/planets${page ? `?page=${page}` : ''}`
 			const response = await axios(url)

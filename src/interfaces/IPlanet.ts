@@ -1,4 +1,5 @@
 export interface IPlanet {
+    [key: string]: string | number,
     name: string,
     rotationPeriod: string | number,
     orbitalPeriod: string | number,

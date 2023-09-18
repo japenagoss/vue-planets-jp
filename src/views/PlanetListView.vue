@@ -78,6 +78,7 @@
 	import { Ref, ref, onMounted, watch, computed } from "vue"
 	import PlanetService from "@/services/PlanetService"
 	import SortableColumn from "@/components/Table/SortableColumn.vue"
+	import { IPlanet } from "@/interfaces/IPlanet"
 
 	const page:Ref<number> = ref(1)
 	const loading:Ref<boolean> = ref(true)
@@ -90,7 +91,7 @@
 	const total = service.getTotal()
 
 	onMounted(async () => {
-		await service.fetchPlanets()
+		await service.fetchPlanets(1)
 		loading.value = false
 	})
 
@@ -99,22 +100,24 @@
 			loading.value = true
 			await service.fetchPlanets(newPage)
 			loading.value = false
+			orderBy.value = "name"
+			order.value = "asc"
 		})()
 	})
 
 	const orderedPlanets = computed(() => {
-		return planets.value.sort((a, b) => {
-			if (typeof a[orderBy.value] === "string") {
-				if (order.value === "asc") {
-					return a[orderBy.value].localeCompare(b[orderBy.value])
-				} else if (order.value === "desc") {
-					return b[orderBy.value].localeCompare(a[orderBy.value])
+		return planets.value.sort((a: IPlanet, b: IPlanet): any => {
+			if (order.value === "asc") {
+				if (typeof a[orderBy.value] === "string") {
+					return String(a[orderBy.value]).localeCompare(String(b[orderBy.value]))
+				} else {
+					return Number(a[orderBy.value]) - Number(b[orderBy.value])
 				}
-			} else if (typeof a[orderBy.value] === "number") {
-				if (order.value === "asc") {
-					return a[orderBy.value] - b[orderBy.value]
-				} else if (order.value === "desc") {
-					return b[orderBy.value] - a[orderBy.value]
+			} else if (order.value === "desc") {
+				if (typeof a[orderBy.value] === "string") {
+					return String(b[orderBy.value]).localeCompare(String(a[orderBy.value]))
+				} else {
+					return Number(b[orderBy.value]) - Number(a[orderBy.value])
 				}
 			}
 		})
