@@ -32,7 +32,10 @@ pnpm dev
 bun run dev
 ```
 ### Unit testing
+
+```
 npm run test
+```
 
 ### Compiles and minifies for production
 
