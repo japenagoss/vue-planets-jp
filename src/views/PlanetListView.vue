@@ -5,6 +5,9 @@
       :loading="loading"
       :data="planets"
       :sortData="sortData"
+      :total="total"
+      :totalVisible="10"
+      :getData="fetchPlanets"
     />
   </v-container>
 </template>
@@ -19,6 +22,7 @@ const store = useStore()
 
 const orderBy: Ref<string> = ref('id')
 const sortOrder: Ref<string> = ref('asc')
+const page: Ref<number> = ref(1)
 const loading: Ref<boolean> = ref(false)
 const headers: Ref<ITableHeader[]> = ref([
   {
@@ -48,9 +52,10 @@ const headers: Ref<ITableHeader[]> = ref([
 ])
 
 const planets = computed(() => store.getters['planets/getPlanets'])
+const total = computed(() => store.getters['planets/getPlanetsTotal'])
 
 onMounted(async () => {
-  await store.dispatch('planets/fetchPlanets')
+  await store.dispatch('planets/fetchPlanets', page.value)
 })
 
 watch([orderBy, sortOrder], ([newOrderBy, newSortOrder]) => {
@@ -63,5 +68,9 @@ watch([orderBy, sortOrder], ([newOrderBy, newSortOrder]) => {
 const sortData = (key: string): void => {
   sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc'
   orderBy.value = key
+}
+
+const fetchPlanets = async (page: number): Promise<void> => {
+  await store.dispatch('planets/fetchPlanets', page)
 }
 </script>

@@ -20,10 +20,18 @@
       </tr>
     </tbody>
   </v-table>
+  <v-pagination
+    v-model="page"
+    :length="props.total"
+    :total-visible="props.totalVisible"
+  ></v-pagination>
 </template>
 
 <script lang="ts" setup>
+import { type Ref, ref, watch } from 'vue'
 import { type ITableHeader } from '@/interfaces/ITable'
+
+const page: Ref<number> = ref(1)
 
 const props = defineProps({
   headers: {
@@ -41,6 +49,22 @@ const props = defineProps({
   sortData: {
     type: Function,
     required: true
+  },
+  total: {
+    type: Number,
+    required: true
+  },
+  totalVisible: {
+    type: Number,
+    required: true
+  },
+  getData: {
+    type: Function,
+    required: true
   }
+})
+
+watch(page, (newPage) => {
+  props.getData(newPage)
 })
 </script>
