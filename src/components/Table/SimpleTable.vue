@@ -5,7 +5,11 @@
   <v-table>
     <thead>
       <tr>
-        <th v-for="header in props.headers" :key="header.value">
+        <th
+          v-for="header in props.headers"
+          :key="header.value"
+          @click="props.sortData(header.value)"
+        >
           {{ header.text }}
         </th>
       </tr>
@@ -32,6 +36,10 @@ const props = defineProps({
   },
   data: {
     type: Array<{ id: number }>,
+    required: true
+  },
+  sortData: {
+    type: Function,
     required: true
   }
 })
