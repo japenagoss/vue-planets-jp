@@ -2,10 +2,10 @@
   <v-container>
     <SimpleTable
       :headers="headers"
-      :loading="loading"
-      :data="planets"
+      :loading="planets.loading"
+      :data="planets.planets"
       :sortData="sortData"
-      :total="total"
+      :total="planets.total"
       :totalVisible="10"
       :getData="fetchPlanets"
       detailsLink="planet"
@@ -24,7 +24,6 @@ const store = useStore()
 const orderBy: Ref<string> = ref('id')
 const sortOrder: Ref<string> = ref('asc')
 const page: Ref<number> = ref(1)
-const loading: Ref<boolean> = ref(false)
 const headers: Ref<ITableHeader[]> = ref([
   {
     text: 'ID',
@@ -57,7 +56,6 @@ const headers: Ref<ITableHeader[]> = ref([
 ])
 
 const planets = computed(() => store.getters['planets/getPlanets'])
-const total = computed(() => store.getters['planets/getPlanetsTotal'])
 
 onMounted(async () => {
   await store.dispatch('planets/fetchPlanets', page.value)

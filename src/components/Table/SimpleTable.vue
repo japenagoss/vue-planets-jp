@@ -2,7 +2,7 @@
   <div class="d-flex justify-center align-center loading-box" v-if="loading">
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
-  <v-table>
+  <v-table v-if="!loading">
     <thead>
       <tr>
         <th
@@ -25,6 +25,7 @@
       </tr>
     </tbody>
   </v-table>
+  <div class="mt-10"></div>
   <v-pagination
     v-model="page"
     :length="props.total"
@@ -76,3 +77,9 @@ watch(page, (newPage) => {
   props.getData(newPage)
 })
 </script>
+
+<style scoped>
+.loading-box {
+  min-height: 575px;
+}
+</style>

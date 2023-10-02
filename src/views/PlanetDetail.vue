@@ -1,13 +1,19 @@
 <template>
   <v-container>
-    <v-card>
+    <div
+      class="d-flex justify-center align-center loading-box"
+      v-if="planet.loading"
+    >
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </div>
+    <v-card v-if="!planet.loading">
       <v-card-item>
-        <v-card-title>Planet: {{ planet.name }}</v-card-title>
+        <v-card-title>Planet: {{ planet.planet.name }}</v-card-title>
         <v-card-text class="mt-5">
           <v-row
             align="center"
             class="mx-0"
-            v-for="(value, key) in planet"
+            v-for="(value, key) in planet.planet"
             :key="value"
           >
             <v-col>
@@ -37,3 +43,9 @@ onMounted(async () => {
   await store.dispatch('planets/fetchPlanet', route.params.id)
 })
 </script>
+
+<style scoped>
+.loading-box {
+  min-height: 575px;
+}
+</style>
