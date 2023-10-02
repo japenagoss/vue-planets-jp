@@ -1,4 +1,4 @@
-import { type Module } from 'vuex'
+import { type Module, type Commit } from 'vuex'
 import axios from 'axios'
 import camelcaseKeys from 'camelcase-keys'
 import { type RootState } from './types'
@@ -12,6 +12,11 @@ interface IPlanetsState {
 interface IPlanetsResult {
   results: IPlanet[]
   count: number
+}
+
+interface IContext {
+  commit: Commit
+  state: IPlanetsState
 }
 
 const state = {
@@ -29,7 +34,7 @@ const mutations = {
 }
 
 const actions = {
-  async fetchPlanets({ commit }: any, page: number) {
+  async fetchPlanets({ commit }: { commit: Commit }, page: number) {
     try {
       const response = await axios.get<IPlanetsResult>(
         `https://swapi.dev/api/planets?page=${page}`
@@ -40,9 +45,11 @@ const actions = {
         return {
           id: Number(splitedUrl[5]),
           name: p.name,
-          rotationPeriod: Number(p.rotationPeriod),
-          orbitalPeriod: Number(p.orbitalPeriod),
-          diameter: Number(p.diameter),
+          rotationPeriod:
+            p.rotationPeriod === 'unknown' ? 0 : Number(p.rotationPeriod),
+          orbitalPeriod:
+            p.orbitalPeriod === 'unknown' ? 0 : Number(p.orbitalPeriod),
+          diameter: p.diameter === 'unknown' ? 0 : Number(p.diameter),
           climate: p.climate
         }
       })
@@ -57,7 +64,7 @@ const actions = {
       console.error('Error fetching items:', error)
     }
   },
-  sortPlanets(context: any, { orderBy, sortOrder }: any): void {
+  sortPlanets(context: IContext, { orderBy, sortOrder }: any): void {
     const currenData = context.state.planets
     const sortedData = currenData.sort((a: IPlanet, b: IPlanet) => {
       const aValue: string | number = a[orderBy]
@@ -76,7 +83,7 @@ const actions = {
           return Number(bValue) - aValue
         }
       }
-      return bValue
+      return 0
     })
     context.commit('SET_PLANETS', {
       planets: sortedData

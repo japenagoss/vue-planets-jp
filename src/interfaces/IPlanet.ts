@@ -3,8 +3,8 @@ export interface IPlanet {
   id: number
   url: string
   name: string
-  rotationPeriod: number
-  orbitalPeriod: number
-  diameter: number
+  rotationPeriod: number | string
+  orbitalPeriod: number | string
+  diameter: number | string
   climate: string
 }
