@@ -7,6 +7,7 @@ import { type IPlanet } from '@/interfaces/IPlanet'
 interface IPlanetsState {
   planets: IPlanet[]
   total: number
+  planet: object
 }
 
 interface IPlanetsResult {
@@ -21,7 +22,8 @@ interface IContext {
 
 const state = {
   planets: [],
-  total: 0
+  total: 0,
+  planet: {}
 }
 
 const mutations = {
@@ -30,6 +32,9 @@ const mutations = {
     if (result.total != null) {
       state.total = result.total
     }
+  },
+  SET_PLANET(state: IPlanetsState, planet: object) {
+    state.planet = planet
   }
 }
 
@@ -64,6 +69,15 @@ const actions = {
       console.error('Error fetching items:', error)
     }
   },
+  async fetchPlanet({ commit }: { commit: Commit }, id: number) {
+    try {
+      const response = await axios.get(`https://swapi.dev/api/planets/${id}`)
+      const planet = camelcaseKeys(response?.data)
+      commit('SET_PLANET', planet)
+    } catch (error) {
+      console.error('Error fetching items:', error)
+    }
+  },
   sortPlanets(context: IContext, { orderBy, sortOrder }: any): void {
     const currenData = context.state.planets
     const sortedData = currenData.sort((a: IPlanet, b: IPlanet) => {
@@ -93,7 +107,8 @@ const actions = {
 
 const getters = {
   getPlanets: (state: IPlanetsState) => state.planets,
-  getPlanetsTotal: (state: IPlanetsState) => state.total
+  getPlanetsTotal: (state: IPlanetsState) => state.total,
+  getPlanet: (state: IPlanetsState) => state.planet
 }
 
 const planetsModule: Module<IPlanetsState, RootState> = {

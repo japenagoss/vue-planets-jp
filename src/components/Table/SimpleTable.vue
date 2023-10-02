@@ -17,6 +17,11 @@
     <tbody>
       <tr v-for="row in props.data" :key="row.id">
         <td v-for="col in row" :key="col">{{ col }}</td>
+        <td v-if="detailsLink">
+          <router-link :to="{ name: 'planet', params: { id: row.id } }">
+            See Detail
+          </router-link>
+        </td>
       </tr>
     </tbody>
   </v-table>
@@ -61,6 +66,9 @@ const props = defineProps({
   getData: {
     type: Function,
     required: true
+  },
+  detailsLink: {
+    type: String
   }
 })
 

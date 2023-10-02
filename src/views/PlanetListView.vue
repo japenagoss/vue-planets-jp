@@ -8,6 +8,7 @@
       :total="total"
       :totalVisible="10"
       :getData="fetchPlanets"
+      detailsLink="planet"
     />
   </v-container>
 </template>
@@ -48,6 +49,10 @@ const headers: Ref<ITableHeader[]> = ref([
   {
     text: 'Climate',
     value: 'climate'
+  },
+  {
+    text: 'Details',
+    value: 'detail'
   }
 ])
 
