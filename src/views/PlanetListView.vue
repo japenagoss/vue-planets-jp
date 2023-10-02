@@ -1,14 +1,16 @@
 <template>
   <v-container>
-    <SimpleTable :headers="headers" :loading="loading" :data="data" />
+    <SimpleTable :headers="headers" :loading="loading" :data="planets" />
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import { type Ref, ref } from 'vue'
+import { type Ref, ref, onMounted, computed } from 'vue'
+import { useStore } from 'vuex'
 import SimpleTable from '@/components/Table/SimpleTable.vue'
 import { type ITableHeader } from '@/interfaces/ITable'
-import { type IPlanet } from '@/interfaces/IPlanet'
+
+const store = useStore()
 
 const loading: Ref<boolean> = ref(false)
 const headers: Ref<ITableHeader[]> = ref([
@@ -38,14 +40,9 @@ const headers: Ref<ITableHeader[]> = ref([
   }
 ])
 
-const data: Ref<IPlanet[]> = ref([
-  {
-    id: 1,
-    name: 'test',
-    rotationPeriod: 3343,
-    orbitalPeriod: 3333,
-    diameter: 2334,
-    climate: 'test'
-  }
-])
+const planets = computed(() => store.getters['planets/getPlanets'])
+
+onMounted(async () => {
+  await store.dispatch('planets/fetchPlanets')
+})
 </script>
