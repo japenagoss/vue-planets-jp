@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import PlanetListView from '@/views/PlanetListView.vue'
 import PlanetDetail from '@/views/PlanetDetail.vue'
+import HomeView from '@/views/HomeView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: (to) => {
-      return { name: 'planets' }
-    }
+    name: 'home',
+    component: HomeView
   },
   {
     path: '/planets',
