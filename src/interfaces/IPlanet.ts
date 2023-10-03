@@ -8,3 +8,10 @@ export interface IPlanet {
   diameter: number | string
   climate: string
 }
+
+export class MyCustomError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'MyCustomError'
+  }
+}

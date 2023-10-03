@@ -9,6 +9,7 @@ interface IPlanetsState {
   total: number
   loading: boolean
   planet: object
+  error: string
 }
 
 interface IPlanetsResult {
@@ -30,7 +31,8 @@ const state = {
   planets: [],
   total: 0,
   planet: {},
-  loading: false
+  loading: false,
+  error: ''
 }
 
 const mutations = {
@@ -45,6 +47,10 @@ const mutations = {
   },
   SET_PLANET(state: IPlanetsState, planet: object) {
     state.planet = planet
+  },
+  SET_ERROR(state: IPlanetsState, error: string) {
+    console.log(error)
+    state.error = error
   }
 }
 
@@ -86,7 +92,7 @@ const actions = {
       commit('SET_LOADING', false)
     } catch (error) {
       commit('SET_LOADING', false)
-      console.error('Error fetching items:', error)
+      commit('SET_ERROR', 'Error fetching planets')
     }
   },
   async fetchPlanet({ commit }: { commit: Commit }, id: number) {
@@ -98,7 +104,8 @@ const actions = {
       commit('SET_LOADING', false)
     } catch (error) {
       commit('SET_LOADING', false)
-      console.error('Error fetching items:', error)
+      commit('SET_LOADING', false)
+      commit('SET_ERROR', 'Error fetching planet')
     }
   },
   sortPlanets(context: IContext, { orderBy, sortOrder }: any): void {
@@ -125,12 +132,16 @@ const actions = {
     context.commit('SET_PLANETS', {
       planets: sortedData
     })
+  },
+  resetError({ commit }: { commit: Commit }) {
+    commit('SET_ERROR', '')
   }
 }
 
 const getters = {
   getPlanets: (state: IPlanetsState) => state,
-  getPlanet: (state: IPlanetsState) => state
+  getPlanet: (state: IPlanetsState) => state,
+  getError: (state: IPlanetsState) => state.error
 }
 
 const planetsModule: Module<IPlanetsState, RootState> = {
