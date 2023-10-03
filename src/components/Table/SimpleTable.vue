@@ -10,7 +10,14 @@
           :key="header.value"
           @click="props.sortData(header.value)"
         >
-          {{ header.text }}
+          <SortableColumn
+            :attributeName="header.value"
+            :label="header.text"
+            :orderBy="props.orderBy"
+            :order="props.order"
+            v-if="header.value !== 'detail'"
+          />
+          <span v-if="header.value === 'detail'">{{ header.text }}</span>
         </th>
       </tr>
     </thead>
@@ -19,7 +26,7 @@
         <td v-for="col in row" :key="col">{{ col }}</td>
         <td v-if="detailsLink">
           <router-link :to="{ name: 'planet', params: { id: row.id } }">
-            See Detail
+            <v-icon :icon="mdiPageNext"></v-icon>
           </router-link>
         </td>
       </tr>
@@ -35,7 +42,9 @@
 
 <script lang="ts" setup>
 import { type Ref, ref, watch } from 'vue'
+import { mdiPageNext } from '@mdi/js'
 import { type ITableHeader } from '@/interfaces/ITable'
+import SortableColumn from './SortableColumn.vue'
 
 const page: Ref<number> = ref(1)
 
@@ -66,6 +75,14 @@ const props = defineProps({
   },
   getData: {
     type: Function,
+    required: true
+  },
+  orderBy: {
+    type: String,
+    required: true
+  },
+  order: {
+    type: String,
     required: true
   },
   detailsLink: {

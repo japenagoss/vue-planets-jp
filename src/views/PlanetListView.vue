@@ -8,6 +8,8 @@
       :total="planets.total"
       :totalVisible="10"
       :getData="fetchPlanets"
+      :orderBy="orderBy"
+      :order="sortOrder"
       detailsLink="planet"
     />
   </v-container>

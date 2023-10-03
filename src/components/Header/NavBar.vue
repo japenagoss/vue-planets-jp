@@ -6,7 +6,7 @@
       v-if="currentRouteName === 'planet'"
       @click="router.push('/planets')"
     >
-      <v-icon>mdi-arrow-left</v-icon>
+      <v-icon :icon="mdiArrowLeft"></v-icon>
     </v-btn>
     <v-toolbar-title>The Star Wars API</v-toolbar-title>
     <v-spacer></v-spacer>
@@ -24,6 +24,7 @@
 <script lang="ts" setup>
 import { computed, type Ref, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { mdiArrowLeft } from '@mdi/js'
 
 interface INav {
   title: string

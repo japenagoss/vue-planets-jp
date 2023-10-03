@@ -1,50 +1,29 @@
 <template>
-  <div
-    class="d-flex flex-row align-center"
-    @mouseover="props.setHover(props.attributeName)"
-    @mouseleave="props.setHover('')"
-  >
+  <div class="d-flex flex-row align-center sortable-column">
     <div>{{ props.label }}</div>
-    <div>
+    <div class="ml-2">
       <v-icon
-        size="large"
-        icon="mdi-chevron-up-circle-outline"
-        v-if="
-          (props.orderBy === props.attributeName && props.order === 'desc') ||
-          (props.hover === props.attributeName &&
-            orderBy !== props.attributeName)
-        "
-        @click="props.setOrder(props.attributeName)"
+        size="medium"
+        :icon="mdiChevronUpCircleOutline"
+        v-if="props.orderBy === props.attributeName && props.order === 'desc'"
       ></v-icon>
       <v-icon
-        size="large"
-        icon="mdi-chevron-down-circle-outline"
-        v-if="orderBy === props.attributeName && order === 'asc'"
-        @click="props.setOrder(props.attributeName)"
+        size="medium"
+        :icon="mdiChevronDownCircleOutline"
+        v-if="props.orderBy === props.attributeName && props.order === 'asc'"
       ></v-icon>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { mdiChevronUpCircleOutline, mdiChevronDownCircleOutline } from '@mdi/js'
 const props = defineProps({
-  setHover: {
-    type: Function,
-    required: true
-  },
-  setOrder: {
-    type: Function,
-    required: true
-  },
   orderBy: {
     type: String,
     required: true
   },
   order: {
-    type: String,
-    required: true
-  },
-  hover: {
     type: String,
     required: true
   },
@@ -58,3 +37,10 @@ const props = defineProps({
   }
 })
 </script>
+
+<style scoped>
+.sortable-column:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>
