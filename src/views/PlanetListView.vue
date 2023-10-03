@@ -1,5 +1,11 @@
 <template>
   <v-container>
+    <v-text-field
+      label="Search planets by name"
+      :prepend-inner-icon="mdiBookSearch"
+      v-model="searchBy"
+      @input="handleSearchInput"
+    ></v-text-field>
     <SimpleTable
       :headers="headers"
       :loading="planets.loading"
@@ -18,6 +24,7 @@
 <script lang="ts" setup>
 import { type Ref, ref, onMounted, computed, watch } from 'vue'
 import { useStore } from 'vuex'
+import { mdiBookSearch } from '@mdi/js'
 import SimpleTable from '@/components/Table/SimpleTable.vue'
 import { type ITableHeader } from '@/interfaces/ITable'
 
@@ -26,6 +33,8 @@ const store = useStore()
 const orderBy: Ref<string> = ref('id')
 const sortOrder: Ref<string> = ref('asc')
 const page: Ref<number> = ref(1)
+const searchBy: Ref<string> = ref('')
+const searchTimeout: Ref<null | ReturnType<typeof setTimeout>> = ref(null)
 const headers: Ref<ITableHeader[]> = ref([
   {
     text: 'ID',
@@ -60,7 +69,7 @@ const headers: Ref<ITableHeader[]> = ref([
 const planets = computed(() => store.getters['planets/getPlanets'])
 
 onMounted(async () => {
-  await store.dispatch('planets/fetchPlanets', page.value)
+  await store.dispatch('planets/fetchPlanets', { page: page.value })
 })
 
 watch([orderBy, sortOrder], ([newOrderBy, newSortOrder]) => {
@@ -70,12 +79,25 @@ watch([orderBy, sortOrder], ([newOrderBy, newSortOrder]) => {
   })
 })
 
+const handleSearchInput = (): void => {
+  if (searchTimeout.value !== null) {
+    clearTimeout(searchTimeout.value)
+  }
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  searchTimeout.value = setTimeout(async (): Promise<void> => {
+    await store.dispatch('planets/fetchPlanets', {
+      page: page.value,
+      search: searchBy.value
+    })
+  }, 1000)
+}
+
 const sortData = (key: string): void => {
   sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc'
   orderBy.value = key
 }
 
 const fetchPlanets = async (page: number): Promise<void> => {
-  await store.dispatch('planets/fetchPlanets', page)
+  await store.dispatch('planets/fetchPlanets', { page })
 }
 </script>

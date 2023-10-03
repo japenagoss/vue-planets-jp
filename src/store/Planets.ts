@@ -16,6 +16,11 @@ interface IPlanetsResult {
   count: number
 }
 
+interface IParameters {
+  page: number
+  search: string | undefined
+}
+
 interface IContext {
   commit: Commit
   state: IPlanetsState
@@ -44,12 +49,17 @@ const mutations = {
 }
 
 const actions = {
-  async fetchPlanets({ commit }: { commit: Commit }, page: number) {
+  async fetchPlanets(
+    { commit }: { commit: Commit },
+    { page, search }: IParameters
+  ): Promise<void> {
     try {
       commit('SET_LOADING', true)
 
       const response = await axios.get<IPlanetsResult>(
-        `https://swapi.dev/api/planets?page=${page}`
+        `https://swapi.dev/api/planets?page=${page}${
+          search !== undefined ? `&search=${search}` : ''
+        }`
       )
       const planets = camelcaseKeys(response?.data?.results)
       const formattedPlanets = planets.map((p: IPlanet) => {
