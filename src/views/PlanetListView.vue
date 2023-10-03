@@ -79,6 +79,9 @@ watch([orderBy, sortOrder], ([newOrderBy, newSortOrder]) => {
   })
 })
 
+/**
+ * Search planets by name
+ */
 const handleSearchInput = (): void => {
   if (searchTimeout.value !== null) {
     clearTimeout(searchTimeout.value)
@@ -92,11 +95,19 @@ const handleSearchInput = (): void => {
   }, 1000)
 }
 
+/**
+ * Order the planets
+ * @param {string} key - orderby parameter
+ */
 const sortData = (key: string): void => {
   sortOrder.value = sortOrder.value === 'desc' ? 'asc' : 'desc'
   orderBy.value = key
 }
 
+/**
+ * Get planets with paginator limit
+ * @param {number} page - number of page
+ */
 const fetchPlanets = async (page: number): Promise<void> => {
   await store.dispatch('planets/fetchPlanets', { page })
 }

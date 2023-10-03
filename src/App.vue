@@ -13,6 +13,9 @@ import NavBar from '@/components/Header/NavBar.vue'
 const store = useStore()
 const error = computed(() => store.getters['planets/getError'])
 
+/**
+ * Hide error message once pass 5 seconds
+ */
 watch(error, (newError) => {
   if (newError.length > 0) {
     setTimeout(() => {
