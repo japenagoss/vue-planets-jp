@@ -3,10 +3,11 @@
  */
 import { afterEach, beforeEach, describe, it, expect } from 'vitest'
 import { type VueWrapper, shallowMount } from '@vue/test-utils'
-import PlanetListView from '@/views/PlanetListView.vue'
+import PlanetDetail from '@/views/PlanetDetail.vue'
 import store from '@/store'
+import router from '@/router'
 
-describe('PlanetListView testing', () => {
+describe('SortableColumn testing', () => {
   let wrapper: VueWrapper<any, any>
 
   afterEach(() => {
@@ -15,10 +16,9 @@ describe('PlanetListView testing', () => {
   })
 
   beforeEach(() => {
-    wrapper = shallowMount(PlanetListView, {
-      props: {},
+    wrapper = shallowMount(PlanetDetail, {
       global: {
-        plugins: [store]
+        plugins: [store, router]
       }
     })
   })
